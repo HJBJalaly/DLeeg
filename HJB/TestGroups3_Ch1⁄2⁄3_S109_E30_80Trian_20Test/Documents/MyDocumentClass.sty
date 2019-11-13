@@ -1,0 +1,483 @@
+% in the name of god
+
+% Last Edit: 
+%	9301023: use \tmpsection instead od \subsection in gls part
+
+%% define Class
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesClass{MyDocumentClass}
+
+
+% class option conditionals
+\newif\ifthesis\thesisfalse
+\newif\ifreport\reporttrue
+
+\newif\ifEN\ENfalse
+\newif\ifFA\FAtrue
+
+\newif\ifgls\glsfalse
+
+\newif\iftikz\tikzfalse
+
+\DeclareOption{thesis}{\thesistrue\reportfalse}
+\DeclareOption{report}{\thesisfalse\reporttrue}
+\DeclareOption{gls}{\glstrue}
+\DeclareOption{EN}{\ENtrue\FAfalse}
+\DeclareOption{tikz}{\tikztrue}
+
+
+\ExecuteOptions{report}
+\ProcessOptions\relax
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% load Required Package 
+
+\RequirePackage[margin=10mm,font={footnotesize},labelfont={footnotesize},justification=centering]{caption}
+\RequirePackage{graphicx}
+\RequirePackage{wrapfig}
+\RequirePackage{supertabular}
+\RequirePackage{booktabs}
+\RequirePackage{colortbl}
+\RequirePackage{subcaption} % for subfigure
+\RequirePackage{float}   % use for force a figure to non-float environment
+				 % for this purpose, use H isntedad of h/
+
+\RequirePackage{verbatim}
+\RequirePackage{fancyhdr}
+\RequirePackage{multicol}
+\RequirePackage{setspace}
+\RequirePackage{changepage}
+% \RequirePackage[dvipsnames]{color}
+\RequirePackage[usenames,dvipsnames,svgnames,table]{xcolor}
+
+\RequirePackage{array}
+\RequirePackage[fleqn]{amsmath}  % for left aligned equation, use fleqn option
+\RequirePackage{amssymb} % for symbol
+\RequirePackage{relsize} %for  \mathlarger. It increases the size of operators,i.e. \sum and it can be nested
+\RequirePackage{amsthm} %for new difinition of theorem keyword
+\RequirePackage{textcomp}
+\RequirePackage{cancel}
+\RequirePackage{extpfeil}
+
+% \RequirePackage[noend]{algorithmic}
+\RequirePackage[linesnumbered]{algorithm}
+\RequirePackage{algorithmic}
+% \RequirePackage[algcompatible]{algpseudocode}  % don't use with  "algorithmic" package
+
+\RequirePackage{lscape} % for make a page landscape
+
+\RequirePackage[toc,title]{appendix}  % for apendix  
+				  %(no need to use "titletoc" options, it is done by some other commands in  "list and contents" part )
+% \usepackage{tocloft}  % --> this packege is includeded in "list and contents" part 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This package is used to add latex example code to your content
+\RequirePackage{showexpl} 
+\lstloadlanguages{[LaTeX]Tex} 
+\lstset{%
+    basicstyle=\ttfamily\small,
+    commentstyle=\itshape\ttfamily\small,
+    showspaces=false,
+    showstringspaces=false,
+    breaklines=true,
+    backgroundcolor=\color{lightgray},
+    breakautoindent=true,
+    captionpos=t
+}
+
+\iftrue
+\lstset{explpreset={numbers=left,numberstyle=\tiny,numbersep=.3em,
+  xleftmargin=1em,columns=flexible,language={}}}
+\fi
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% this is used for bulleting and numebring
+
+\RequirePackage{enumitem}
+
+\ifthesis
+    \setlist[itemize,1]{label={\fontfamily{cmr}\fontencoding{T1}\selectfont\textbullet},itemsep=.01cm,partopsep=0.01cm,topsep=0.01cm}
+    \setdescription{leftmargin=1.5cm,labelindent=\parindent,itemsep=.01cm,partopsep=0.01cm,topsep=0.01cm}
+    \setlist{nolistsep}  % remove vertical space between items
+\fi
+
+\ifreport
+    \setlist[itemize,1]{label={\fontfamily{cmr}\fontencoding{T1}\selectfont\textbullet},itemsep=.01cm,partopsep=0.01cm,topsep=0.01cm,after=\newline}
+    \setdescription{leftmargin=1.5cm,labelindent=\parindent,itemsep=.01cm,partopsep=0.01cm,topsep=0.01cm,,after=\newline}
+    \setlist{nolistsep}  % remove vertical space between items
+    \setenumerate{after=\newline}
+\fi
+
+    
+\newenvironment{strict_enumerate}
+{\begin{enumerate}
+  \setlength{\itemsep}{1pt}
+  \setlength{\parskip}{0pt}
+  \setlength{\parsep}{0pt}}
+{\end{enumerate}}
+
+\newenvironment{strict_itemize}
+{\begin{itemize}
+  \setlength{\itemsep}{6pt}
+  \setlength{\parskip}{0pt}
+  \setlength{\parsep}{0pt}}
+{\end{itemize}}
+
+\newenvironment{strict_description}
+{\begin{description}
+  \setlength{\itemsep}{6pt}
+  \setlength{\parskip}{0pt}
+  \setlength{\parsep}{0pt}}
+{\end{description}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Footnote and Reference
+\RequirePackage{zref-perpage} %for reset footnote number in any page
+\zmakeperpage{footnote}
+
+% latin number for latin footnote and persion number for persian ones
+%   \makeatletter
+%   \def\@makeLTRfnmark{\hbox{\@textsuperscript{\latinfont\@thefnmark}}}
+%   \renewcommand\@makefntext[1]{%
+%       \parindent 1em%
+%       \noindent
+% %       \hb@xt@1.8em{\hss\if@RTL\@makefnmark\else\@makeLTRfnmark\fi}#1}
+%   \makeatother
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Citations and Hyperlink
+\RequirePackage{cite}
+\RequirePackage[hyperindex=true,pagebackref=true,colorlinks, citecolor=blue,menucolor=blue]{hyperref} % PDF links
+\RequirePackage{zref-xr}  % for ref to label of other tex file
+\zexternaldocument{}  % name of tex files which are going to cite their labels (this command should be placed in main file)
+
+\RequirePackage{notoccite} % To Ignore citations in captions or sections in lists
+		       % For some unknown reason, it doesn't work
+		       % instead use this formating for caption:
+			  % \caption[<Figure title>]{<Figure title> \cite{<Source>}}
+
+%----vvvvvv   this is for show document page where ref are cited there.
+\renewcommand*{\backreflastsep}{, }
+\renewcommand*{\backreftwosep}{, }
+\renewcommand*{\backref}[1]{}
+\renewcommand*{\backrefalt}[4]{%
+  \ifcase #1 %
+    No citations.% use \relax if you do not want the "No citations" message
+  \or
+    (\lr{Cited on page} #4).%
+  \else
+    (\lr{Cited on pages} #4).%
+  \fi%
+}
+\renewcommand{\citedash}{$-$}
+%^^^^^^^^^^^^^^^^^^^^^^
+
+\definecolor{darkred}{rgb}{0.5,0,0}
+\definecolor{darkgreen}{rgb}{0,0.5,0.2}
+\definecolor{darkblue}{rgb}{0,0,}
+
+
+\hypersetup{
+    colorlinks=true, %set true if you want colored links
+    citecolor=blue,
+    filecolor=blue,
+    linkcolor=blue,
+    urlcolor=red,
+    linktoc=all,     %set to all if you want both sections and subsections linked
+}
+
+% ستور ذکر شده در بالا برای تغییر عنوان مراجع در کلاس article کار می‌کند. اگر از کلاس book یا xepersian-thesis استفاده می‌کنید باید از دستور زیر استفاده  نمایید: 
+%  \renewcommand{\bibname}{\rl{{مراجع}\hfill}}‎ 
+
+\ifFA
+  \let\orgautoref\autoref
+  \renewcommand{\autoref}{%
+	\def\figureautorefname{شکل}%
+	\def\tableautorefname{جدول}%
+	\def\algorithmautorefname{الخوارزم}%
+	\def\appendixautorefname{ضمیمه‌ی}%
+	\def\equationautorefname{رابطه‌ی}%
+	\def\chapterautorefname{فصل}%
+	\def\sectionautorefname{بخش}%
+	\def\subsectionautorefname{زیربخش}%
+	\def\subsubsectionautorefname{زیر زیربخش}%
+	\def\thmautorefname{قضیه‌ی}%
+	\def\footnoteautorefname{پاورقی}%
+	\def\pageautorefname{صفحه}%
+	\orgautoref%
+	}
+\fi
+  
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Lists and Table of Contexts
+\RequirePackage[titles]{tocloft} 
+\RequirePackage[notbib]{tocbibind}  % add "table of contents" and "table of figure" and "table of table" to toc  
+
+\ifFA
+  \renewcommand{\cftfigpresnum}{شکل }
+  \settowidth{\cftfignumwidth}{شکل  20\quad \qquad}
+  \renewcommand{\cftfigaftersnum}{:}
+
+    \renewcommand{\cfttabpresnum}{جدول }
+    \settowidth{\cfttabnumwidth }{جدول 20\quad \qquad}
+    \renewcommand{\cfttabaftersnum}{:}
+\fi
+    
+\ifthesis
+      % add  ``chapter" and ''appendix`` word to toc.
+      \makeatletter 
+      \def\@chapter[#1]#2{\ifnum \c@secnumdepth >\m@ne
+			      \refstepcounter{chapter}%
+			      \typeout{\@chapapp\space\thechapter.}%
+			      \addcontentsline{toc}{chapter}%
+					{\@chapapp~\protect\numberline{\thechapter}#1}%
+			  \else
+			    \addcontentsline{toc}{chapter}{#1}%
+			  \fi
+			  \chaptermark{#1}%
+			  \addtocontents{lof}{\protect\addvspace{10\p@}}%
+			  \addtocontents{lot}{\protect\addvspace{10\p@}}%
+			  \if@twocolumn
+			    \@topnewpage[\@makechapterhead{#2}]%
+			  \else
+			    \@makechapterhead{#2}%
+			    \@afterheading
+			  \fi}
+      \renewcommand*\l@section{\@dottedtocline{1}{3.5em}{2.3em}}
+      \renewcommand*\l@subsection{\@dottedtocline{2}{5.8em}{3.2em}} 
+      \makeatother
+\fi
+
+% for numbering subsubsections
+\setcounter{secnumdepth}{3}
+%to include subsubsections in the table of contents you will have to add also the line
+\setcounter{tocdepth}{3}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% for persian english glossaries
+
+\RequirePackage[xindy,nonumberlist=true,toc]{glossaries}
+\ifgls
+
+      \newcommand{\tmpsection}[1]{}
+      \let\tmpsection=\subsection
+
+	% style=listgroup,nonumberlist
+	% Persian  to English
+	\newglossarystyle{mylistFa}{
+	    \glossarystyle{list}
+	    \renewenvironment{theglossary}{}{}
+% 	    \renewcommand*{\glossaryheader}{}
+ 	    \renewcommand*{\glsgroupheading}[1]{\tmpsection*{\glsgetgrouptitle{##1}}}
+	    \renewcommand*{\glsgroupskip}{\vskip 2mm}
+	    \renewcommand*{\glossaryentryfield}[5]     {\noindent\glstarget{##1}{##2}\dotfill \space \lr{##3} \\}
+	    \renewcommand*{\glossarysubentryfield}[6]{\glossaryentryfield{##2}{##3}{##4}{##5}{##6}}
+	}
+
+	% English to Persian
+	\newglossarystyle{mylistLa}{
+	\glossarystyle{list}
+	\renewenvironment{theglossary}{}{}
+% 	\renewcommand*{\glossaryheader}{}
+	\renewcommand*{\glsgroupheading}[1]{\begin{LTR} \tmpsection*{\glsgetgrouptitle{##1}} \end{LTR}}
+	\renewcommand*{\glsgroupskip}{\vskip 2mm}
+	\renewcommand*{\glossaryentryfield}[5]     {\noindent\glstarget{##1}{##3}\dotfill \space ##2 \\}
+	\renewcommand*{\glossarysubentryfield}[6]{\glossaryentryfield{##2}{##3}{##4}{##5}{##6}}
+	}
+
+	
+	\newglossary[glg]{latin}{gls}{glo}{ واژه‌نامه‌ی انگلیسی به فارسی}
+	\newglossary[blg]{persian}{bls}{blo}{واژه‌نامه‌ی فارسی به انگلیسی}
+
+	\newcommand{\mls}[1]{\gls{fa-#1}\glsuseri{la-#1}}
+
+	\newcommand{\inpdic}[2]{
+		\newglossaryentry{fa-#1}{type=persian,name={#1}, sort={#1},description={#2}}
+		\newglossaryentry{la-#1}{type=latin,name=\lr{#2}, sort={#2},description={#1}}
+	}
+
+
+	\defglsdisplayfirst[persian]{#1#4\LTRfootnote{#2}}
+
+	\makeatletter
+	\makeglossaries
+	\glsdisablehyper
+\fi	
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\iftikz
+  \RequirePackage{tikz}
+  \usetikzlibrary{patterns}
+  \usetikzlibrary{calc}
+  \usetikzlibrary{quotes,angles}
+  \usetikzlibrary{external,positioning}
+  \tikzexternalize[prefix=Tikz/,up to date check=diff]
+  \tikzset{external/system call={xelatex --jobname="\image" "\texsource"}}
+\fi
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage{sectsty} %% to change Section font  --> another choice: titlesec package
+  % this SHOULD be called before xepersian package.
+
+
+% xepersian
+\ifFA
+  \RequirePackage[extrafootnotefeatures]{xepersian}
+  \LTRcolumnfootnotes
+  % \twocolumnfootnotes
+\fi
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% spacing and paraghraph formating
+\RequirePackage{indentfirst}  % indent for first pharaghraph of each sectionnameautorefname
+
+\ifthesis
+      \linespread{2} % line space ---> 1.15
+      \setlength\parskip{0.25cm} % فاصله‌ی بین پاراگراف‌ها
+      \setlength\topmargin{-0.5in}
+      \setlength\headheight{2cm}
+      \setlength\headsep{0.7cm}
+      \setlength\textheight{8.997in}
+      \setlength\textwidth{5.9078in}
+      \setlength\oddsidemargin{-0.0158in}
+      \setlength\evensidemargin{0.38in}
+      \setlength{\parindent}{0.75cm} % برای تو رفتگی اول پاراگراف    
+\fi
+
+
+\ifreport
+      \linespread{1.5} % line space ---> 1.15
+      %\setlength\parskip{\baselineskip} % فاصله‌ی بین پاراگراف‌ها
+      \setlength\topmargin{-0.5in}
+      \setlength\headheight{2cm}
+      \setlength\headsep{0.7cm}
+      \setlength\textheight{8.997in}
+      \setlength\textwidth{5.9078in}
+      \setlength\oddsidemargin{-0.0158in}
+      \setlength\evensidemargin{0.38in}
+      \setlength{\parindent}{0.75cm}  % برای تو رفتگی اول پاراگراف
+      \setlength{\parskip}{0.1ex plus 0.1ex minus 0.1ex}
+\fi
+
+% space before and after equations  
+\AtBeginDocument{%
+ \setlength{\abovedisplayskip}{0cm}
+ \setlength{\belowdisplayskip}{.2cm}
+ }
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% fonts and digits 
+
+\ifFA
+    \defpersianfont\nastaliq[Scale=1.4]{IranNastaliq}
+    \defpersianfont\nastaliqbig[Scale=1.3]{IranNastaliq}
+    \defpersianfont\nastaliqBig[Scale=2]{IranNastaliq}
+
+    \ifthesis
+	  \settextfont[Scale=1.3]{XB Niloofar}
+	  \setlatintextfont[Scale=1.05]{Times New Roman}
+	  %\setdigitfont[Scale=1.2]{XB Niloofar}
+
+	  % به صورت پیش فرض اعداد و ارقام به صورت فارسی در فرمول ها در لاتک نوشته می شود،
+    %      اگر بخواهد اعداد و ارقام به صورت انگلیسی در فرمول ها ظاهر شوند، کافی است دستور زیر را بنویسید: 
+	  \DefaultMathsDigits
+	  
+	  \DeclareMathSizes{10}{12}{8}{6}   % For size 10 text
+	  \setmainfont[Scale=1.3,Script=Arabic,Mapping=farsidigits]{XB Niloofar}  % fontsize  : 14
+	  
+	  \defpersianfont\Nazanin[Scale=1.3]{XB Niloofar}
+	  \chapterfont{\nastaliq} %% need "sectsty" package
+	  \sectionfont{\nastaliq} %% need "sectsty" package
+	  \subsectionfont{\nastaliq} %% need "sectsty" package
+	  \subsubsectionfont{\nastaliq} %% need "sectsty" package
+	  \allsectionsfont{\nastaliq} %% need "sectsty" package
+	  \chaptertitlefont{\nastaliq}
+    \fi
+
+    \ifreport
+	  \settextfont[Scale=1.08]{XB Niloofar}
+	  \setlatintextfont[Scale=.9]{Times New Roman}
+	  %\setdigitfont[Scale=1.2]{XB Niloofar}
+
+	  % به صورت پیش فرض اعداد و ارقام به صورت فارسی در فرمول ها در لاتک نوشته می شود،
+    %      اگر بخواهد اعداد و ارقام به صورت انگلیسی در فرمول ها ظاهر شوند، کافی است دستور زیر را بنویسید: 
+	  \DefaultMathsDigits
+	  
+	  \DeclareMathSizes{10}{10}{8}{6}   % For size 10 text
+	  %\DeclareMathSizes{display size}{text size}{script size}{scriptscript size}.
+	  \setmainfont[Scale=1.08,Script=Arabic,Mapping=farsidigits]{XB Niloofar}  % fontsize  : 14
+
+	  %\defpersianfont\shafigh[Scale=1]{Times New Roman}
+	  \defpersianfont\nastaliq[Scale=2]{IranNastaliq}
+	  \defpersianfont\nastaliqbig[Scale=2.3]{IranNastaliq}
+	  \sectionfont{\nastaliq}
+    \fi
+\fi
+      
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% for numebring of materials
+
+\ifthesis
+      \numberwithin{equation}{chapter}
+      \numberwithin{table}{chapter}
+      \numberwithin{figure}{chapter}
+      \numberwithin{equation}{chapter}
+      \numberwithin{algorithm}{chapter}
+\fi
+
+% use this, if you have no chapter
+\ifreport
+      \renewcommand\thesection{\arabic{section}}
+\fi
+      
+\newtheoremstyle{newstyle}      
+  {0pt} %Aboveskip 
+  {0pt} %Below skip
+  {\mdseries} %Body font e.g.\mdseries,\bfseries,\scshape,\itshape
+  {} %Indent
+  {\bfseries} %Head font e.g.\bfseries,\scshape,\itshape
+  {.} %Punctuation afer theorem header
+  { } %Space after theorem header
+  {} %Heading
+
+\theoremstyle{newstyle}
+\ifFA
+    \newtheorem{thm}{قضیه}[chapter]
+
+    \newtheorem{definition}{تعریف}[chapter]
+    \newtheorem*{definition*}{تعریف}
+
+    \newtheorem{lemma}{لم}[chapter]
+
+    \makeatletter
+    \renewcommand{\ALG@name}{الخوارزم}
+    \renewcommand{\listalgorithmname}{فهرست \ALG@name‌ها}
+    \makeatother
+\fi
+\ifEN
+    \makeatletter
+    \renewcommand{\ALG@name}{Algorithm}
+%     \renewcommand{\listalgorithmname}{فهرست \ALG@name‌ها}
+    \makeatother
+\fi
+
+\endinput
